@@ -1,0 +1,46 @@
+Multiplex-TCP
+
+A multiplexed TCP client. Multiplex::TCP is able to make multiple TCP
+connections in parallel.
+
+Version 0.01 is a pure Perl implementation.
+
+
+INSTALLATION
+
+To install this module, run the following commands:
+
+	perl Makefile.PL
+	make
+	make test
+	make install
+
+SUPPORT AND DOCUMENTATION
+
+After installing, you can find documentation for this module with the
+perldoc command.
+
+    perldoc Multiplex::TCP
+
+You can also look for information at:
+
+    RT, CPAN's request tracker
+        http://rt.cpan.org/NoAuth/Bugs.html?Dist=Multiplex-TCP
+
+    AnnoCPAN, Annotated CPAN documentation
+        http://annocpan.org/dist/Multiplex-TCP
+
+    CPAN Ratings
+        http://cpanratings.perl.org/d/Multiplex-TCP
+
+    Search CPAN
+        http://search.cpan.org/dist/Multiplex-TCP/
+
+
+COPYRIGHT AND LICENCE
+
+Copyright (C) 2010 Kan Liu
+
+This program is free software; you can redistribute it and/or modify it
+under the same terms as Perl itself.
+
