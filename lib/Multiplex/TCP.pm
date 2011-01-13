@@ -7,10 +7,10 @@ package Multiplex::TCP;
 
 =head1 VERSION
 
-This documentation describes version 0.01
+This documentation describes version 0.10
 
 =cut
-use version;      our $VERSION = qv( 0.01 );
+use version;      our $VERSION = qv( 0.10 );
 
 use warnings;
 use strict;
@@ -36,10 +36,11 @@ use constant { MAX_BUF => 2 ** 20, MULTIPLEX => 2 ** 5 };
 
  my %option =
  (
-     timeout => 300,    ## global timeout in seconds
-     max_buf => 1024,   ## max number of bytes in each result
-     multiplex => 100,  ## max number of threads
-     index => 'forward' ## index results/errors by server
+     timeout => 300,     ## global timeout in seconds
+     max_buf => 1024,    ## max number of bytes in each read buffer
+     multiplex => 100,   ## max number of threads
+     index => 'forward'  ## index results/errors by server
+     verbose => *STDERR  ## report progress to STDERR
  );
 
  if ( $client->run( %option ) )
@@ -116,8 +117,9 @@ Returns 1 if successful. Returns 0 otherwise.
 
  index     : index results/errors by server if set to 'forward'
  timeout   : global timeout in seconds
- max_buf   : max number of bytes in each result
+ max_buf   : max number of bytes in each read buffer
  multiplex : max number of threads
+ verbose   : report progress to a file handle opened for write.
 
 =cut
 sub run
@@ -168,6 +170,7 @@ sub run
 
     my $addr = $this->{addr};
     my $timeout = $param{timeout};
+    my $verbose = $param{verbose};
     my $multiplex = $param{multiplex} || MULTIPLEX;
     my $max_buf = $param{max_buf} || MAX_BUF;
     my ( %error, %result, %lookup );
@@ -175,6 +178,7 @@ sub run
     my $current = 0;
 
     $multiplex = @server if $multiplex > @server;
+    $verbose = 0 unless $verbose && fileno $verbose && -w $verbose;
 
     while ( $poll->handles || @server )
     {
@@ -260,6 +264,8 @@ sub run
             $poll->remove( $socket );
             shutdown $socket, 0;
             $current --;
+
+            print $verbose "$server complete.\n" if $verbose;
         }
 
         for my $socket ( $poll->handles( $mask{out} ) )
@@ -299,6 +305,8 @@ sub run
             $poll->remove( $socket );
             shutdown $socket, 2;
             $current --;
+
+            print $verbose "$server timeout.\n" if $verbose;
         }
     }
 
